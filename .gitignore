@@ -1,0 +1,23 @@
+cat > .gitignore <<'EOF'
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+
+# Flask
+instance/
+.webassets-cache/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Build output
+*.o
+*.so
+museum_core

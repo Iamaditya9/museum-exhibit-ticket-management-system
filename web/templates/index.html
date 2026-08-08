@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Museum Operations Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-mark">M</div>
+
+                <div>
+                    <h1>MuseumOps</h1>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="navigation">
+
+                <button class="nav-item active" data-section="dashboard">
+                    <span>▦</span>
+                    Dashboard
+                </button>
+
+                <button class="nav-item" data-section="exhibits">
+                    <span>◈</span>
+                    Exhibits
+                </button>
+
+                <button class="nav-item" data-section="tickets">
+                    <span>□</span>
+                    Tickets
+                </button>
+
+                <button class="nav-item" data-section="analytics">
+                    <span>◒</span>
+                    Analytics
+                </button>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <span class="status-dot"></span>
+                C Core Online
+            </div>
+
+        </aside>
+
+
+        <!-- Main content -->
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <div>
+                    <p class="eyebrow">MUSEUM OPERATIONS</p>
+                    <h2 id="page-title">Dashboard</h2>
+                </div>
+
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    System Operational
+                </div>
+
+            </header>
+
+
+            <!-- Dashboard -->
+            <section id="dashboard" class="page-section active-section">
+
+                <div class="welcome">
+                    <div>
+                        <h3>Good evening.</h3>
+                        <p>
+                            Monitor exhibits, ticket activity and museum
+                            performance from one place.
+                        </p>
+                    </div>
+
+                    <button class="primary-button" id="refresh-dashboard">
+                        Refresh Data
+                    </button>
+                </div>
+
+
+                <!-- KPI cards -->
+                <div class="metrics-grid">
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Total Exhibits
+                        </div>
+
+                        <div class="metric-value" id="exhibits-count">
+                            —
+                        </div>
+
+                        <div class="metric-description">
+                            Active museum exhibits
+                        </div>
+                    </div>
+
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Visitors
+                        </div>
+
+                        <div class="metric-value" id="visitors-count">
+                            —
+                        </div>
+
+                        <div class="metric-description">
+                            Recorded ticket visitors
+                        </div>
+                    </div>
+
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Tickets Sold
+                        </div>
+
+                        <div class="metric-value" id="tickets-count">
+                            —
+                        </div>
+
+                        <div class="metric-description">
+                            Completed transactions
+                        </div>
+                    </div>
+
+
+                    <div class="metric-card revenue-card">
+                        <div class="metric-label">
+                            Revenue
+                        </div>
+
+                        <div class="metric-value" id="revenue-value">
+                            —
+                        </div>
+
+                        <div class="metric-description">
+                            Total ticket revenue
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Quick actions -->
+                <div class="content-grid">
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div>
+                                <p class="eyebrow">OPERATIONS</p>
+                                <h3>Quick Actions</h3>
+                            </div>
+                        </div>
+
+                        <div class="action-grid">
+
+                            <button
+                                class="action-button"
+                                data-action="add-exhibit"
+                            >
+                                <strong>Add Exhibit</strong>
+                                <span>Create a new museum exhibit</span>
+                            </button>
+
+                            <button
+                                class="action-button"
+                                data-action="purchase-ticket"
+                            >
+                                <strong>Sell Ticket</strong>
+                                <span>Record a visitor transaction</span>
+                            </button>
+
+                            <button
+                                class="action-button"
+                                data-action="search-exhibit"
+                            >
+                                <strong>Find Exhibit</strong>
+                                <span>Search the exhibit catalogue</span>
+                            </button>
+
+                            <button
+                                class="action-button"
+                                data-section-target="analytics"
+                            >
+                                <strong>View Analytics</strong>
+                                <span>Review museum performance</span>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div>
+                                <p class="eyebrow">SYSTEM</p>
+                                <h3>Architecture</h3>
+                            </div>
+                        </div>
+
+                        <div class="architecture-list">
+
+                            <div>
+                                <span class="architecture-icon">C</span>
+
+                                <div>
+                                    <strong>C Core</strong>
+                                    <p>
+                                        Business logic and data processing
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="architecture-icon">DB</span>
+
+                                <div>
+                                    <strong>Binary Storage</strong>
+                                    <p>
+                                        Persistent exhibit and ticket records
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="architecture-icon">API</span>
+
+                                <div>
+                                    <strong>Flask API</strong>
+                                    <p>
+                                        Web interface between UI and C
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Exhibits -->
+            <section id="exhibits" class="page-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="eyebrow">CATALOGUE</p>
+                        <h3>Exhibit Management</h3>
+                    </div>
+
+                    <button
+                        class="primary-button"
+                        data-action="add-exhibit"
+                    >
+                        + Add Exhibit
+                    </button>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="search-row">
+
+                        <input
+                            type="number"
+                            id="search-exhibit-id"
+                            placeholder="Enter exhibit ID"
+                        >
+
+                        <button
+                            class="secondary-button"
+                            id="search-exhibit-button"
+                        >
+                            Search
+                        </button>
+
+                    </div>
+
+
+                    <div id="exhibit-result" class="result-area">
+
+                        <div class="empty-state">
+                            Search for an exhibit by ID.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Tickets -->
+            <section id="tickets" class="page-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="eyebrow">TRANSACTIONS</p>
+                        <h3>Ticket Management</h3>
+                    </div>
+
+                    <button
+                        class="primary-button"
+                        data-action="purchase-ticket"
+                    >
+                        + Sell Ticket
+                    </button>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">□</div>
+
+                        <h3>Ticket operations</h3>
+
+                        <p>
+                            Record ticket purchases and update visitor
+                            statistics through the C core.
+                        </p>
+
+                        <button
+                            class="primary-button"
+                            data-action="purchase-ticket"
+                        >
+                            Record Ticket Sale
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Analytics -->
+            <section id="analytics" class="page-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="eyebrow">REPORTING</p>
+                        <h3>Museum Analytics</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="metrics-grid analytics-metrics">
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Visitors / Ticket
+                        </div>
+
+                        <div
+                            class="metric-value"
+                            id="visitor-ratio"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Average Ticket
+                        </div>
+
+                        <div
+                            class="metric-value"
+                            id="average-ticket"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <p class="eyebrow">PERFORMANCE</p>
+                            <h3>Current System Snapshot</h3>
+                        </div>
+
+                    </div>
+
+                    <div id="analytics-summary">
+
+                        <div class="empty-state">
+                            Loading analytics...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+
+        <div class="modal">
+
+            <button class="modal-close" id="modal-close">
+                ×
+            </button>
+
+            <div id="modal-content"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>

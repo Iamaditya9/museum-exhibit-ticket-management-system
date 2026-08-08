@@ -1,0 +1,647 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <div class="eyebrow">CATALOGUE</div>
+        <h1>Exhibit Management</h1>
+        <p>Manage museum exhibits and monitor visitor activity.</p>
+    </div>
+
+    <button class="primary-button" id="openAddExhibit">
+        + Add Exhibit
+    </button>
+</div>
+
+<div class="panel">
+
+    <div class="panel-header">
+        <div>
+            <h2>Exhibits</h2>
+            <p id="exhibitCount">Loading exhibits...</p>
+        </div>
+
+        <button class="secondary-button" id="refreshExhibits">
+            Refresh
+        </button>
+    </div>
+
+    <div id="message"></div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Exhibit</th>
+                    <th>Category</th>
+                    <th>Visitors</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="exhibitTableBody">
+                <tr>
+                    <td colspan="5" class="loading">
+                        Loading exhibits...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<!-- Add Exhibit Modal -->
+
+<div class="modal hidden" id="addExhibitModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+            <div>
+                <div class="eyebrow">CATALOGUE</div>
+                <h2>Add Exhibit</h2>
+            </div>
+
+            <button class="close-button" id="closeAddExhibit">
+                ×
+            </button>
+        </div>
+
+        <form id="addExhibitForm">
+
+            <label for="exhibitName">
+                Exhibit Name
+            </label>
+
+            <input
+                id="exhibitName"
+                type="text"
+                placeholder="e.g. Roman Empire"
+                required
+            >
+
+            <label for="exhibitCategory">
+                Category
+            </label>
+
+            <input
+                id="exhibitCategory"
+                type="text"
+                placeholder="e.g. Ancient History"
+                required
+            >
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    id="cancelAddExhibit"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Add Exhibit
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.page-header h1 {
+    margin: 6px 0 8px;
+}
+
+.page-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #64748b;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.panel-header h2 {
+    margin: 0 0 6px;
+}
+
+.panel-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.primary-button,
+.secondary-button,
+.close-button {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.primary-button {
+    background: #111827;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.primary-button:hover {
+    background: #1f2937;
+}
+
+.secondary-button {
+    background: #f1f5f9;
+    color: #111827;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.secondary-button:hover {
+    background: #e2e8f0;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    background: #f8fafc;
+}
+
+th,
+td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+td {
+    color: #334155;
+}
+
+.exhibit-name {
+    font-weight: 700;
+    color: #111827;
+}
+
+.visitor-count {
+    font-weight: 700;
+}
+
+.delete-button {
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.delete-button:hover {
+    background: #fecaca;
+}
+
+.loading,
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+}
+
+#message {
+    margin-bottom: 16px;
+}
+
+.success-message,
+.error-message {
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.success-message {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.error-message {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+/* Modal */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-card {
+    width: min(500px, 100%);
+    background: white;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.modal-header h2 {
+    margin: 6px 0 0;
+}
+
+.close-button {
+    background: transparent;
+    font-size: 28px;
+    color: #64748b;
+}
+
+.close-button:hover {
+    color: #111827;
+}
+
+form label {
+    display: block;
+    margin: 16px 0 7px;
+    font-weight: 700;
+}
+
+form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+form input:focus {
+    outline: 2px solid #cbd5e1;
+    border-color: #64748b;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+@media (max-width: 700px) {
+
+    .page-header,
+    .panel-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .primary-button {
+        width: 100%;
+    }
+
+    th,
+    td {
+        padding: 12px 10px;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+const tableBody = document.getElementById("exhibitTableBody");
+const exhibitCount = document.getElementById("exhibitCount");
+const message = document.getElementById("message");
+
+const modal = document.getElementById("addExhibitModal");
+const openAddExhibit = document.getElementById("openAddExhibit");
+const closeAddExhibit = document.getElementById("closeAddExhibit");
+const cancelAddExhibit = document.getElementById("cancelAddExhibit");
+
+const addExhibitForm = document.getElementById("addExhibitForm");
+
+const refreshExhibits = document.getElementById("refreshExhibits");
+
+
+function showMessage(text, type = "success") {
+
+    message.innerHTML = `
+        <div class="${type === "success" ? "success-message" : "error-message"}">
+            ${text}
+        </div>
+    `;
+
+    setTimeout(() => {
+        message.innerHTML = "";
+    }, 3500);
+}
+
+
+function openModal() {
+    modal.classList.remove("hidden");
+    document.getElementById("exhibitName").focus();
+}
+
+
+function closeModal() {
+    modal.classList.add("hidden");
+    addExhibitForm.reset();
+}
+
+
+async function loadExhibits() {
+
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="5" class="loading">
+                Loading exhibits...
+            </td>
+        </tr>
+    `;
+
+    try {
+
+        const response = await fetch("/api/exhibits");
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.error || "Unable to load exhibits.");
+        }
+
+        const exhibits = data.exhibits || [];
+
+        exhibitCount.textContent =
+            `${exhibits.length} active exhibit${exhibits.length === 1 ? "" : "s"}`;
+
+        if (exhibits.length === 0) {
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty">
+                        No exhibits found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        tableBody.innerHTML = exhibits.map(exhibit => `
+
+            <tr>
+
+                <td>${exhibit.id}</td>
+
+                <td class="exhibit-name">
+                    ${escapeHtml(exhibit.name)}
+                </td>
+
+                <td>
+                    ${escapeHtml(exhibit.category)}
+                </td>
+
+                <td class="visitor-count">
+                    ${exhibit.visitors}
+                </td>
+
+                <td>
+
+                    <button
+                        class="delete-button"
+                        onclick="deleteExhibit(${exhibit.id}, '${escapeJs(exhibit.name)}')"
+                    >
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `).join("");
+
+    } catch (error) {
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty">
+                    ${escapeHtml(error.message)}
+                </td>
+            </tr>
+        `;
+
+        exhibitCount.textContent = "Unable to load exhibits";
+    }
+}
+
+
+async function deleteExhibit(id, name) {
+
+    const confirmed = confirm(
+        `Delete "${name}" (Exhibit #${id})?\n\nThis action cannot be undone.`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `/api/exhibits/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.error || "Unable to delete exhibit."
+            );
+        }
+
+        showMessage(`Exhibit "${name}" deleted successfully.`);
+
+        await loadExhibits();
+
+    } catch (error) {
+
+        showMessage(error.message, "error");
+
+    }
+}
+
+
+addExhibitForm.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    const name = document.getElementById("exhibitName").value.trim();
+    const category = document.getElementById("exhibitCategory").value.trim();
+
+    if (!name || !category) {
+        showMessage(
+            "Exhibit name and category are required.",
+            "error"
+        );
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/exhibits",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name,
+                    category
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.error || "Unable to add exhibit."
+            );
+        }
+
+        closeModal();
+
+        showMessage(
+            `Exhibit added successfully. ID: ${data.exhibitID}`
+        );
+
+        await loadExhibits();
+
+    } catch (error) {
+
+        showMessage(error.message, "error");
+
+    }
+
+});
+
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+function escapeJs(value) {
+
+    return String(value)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replaceAll("\n", "\\n")
+        .replaceAll("\r", "\\r");
+}
+
+
+openAddExhibit.addEventListener("click", openModal);
+
+closeAddExhibit.addEventListener("click", closeModal);
+
+cancelAddExhibit.addEventListener("click", closeModal);
+
+refreshExhibits.addEventListener("click", loadExhibits);
+
+
+modal.addEventListener("click", (event) => {
+
+    if (event.target === modal) {
+        closeModal();
+    }
+
+});
+
+
+loadExhibits();
+
+</script>
+
+{% endblock %}
