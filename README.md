@@ -4,6 +4,20 @@ A full-stack museum management system built with a **C application core**, **Fla
 
 The system manages museum exhibits, visitor ticket transactions, persistent records, and operational analytics through a clean dashboard.
 
+## Screenshots
+
+### Dashboard
+
+![Museum Operations Dashboard](Docs/screenshots/dashboard.png)
+
+### Exhibit Management
+
+![Exhibit Management](Docs/screenshots/exhibits.png)
+
+### Ticket Management
+
+![Ticket Management](Docs/screenshots/tickets.png)
+
 ## Features
 
 - Exhibit management
